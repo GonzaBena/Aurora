@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductFilter from '../components/ProductFilter';
+---
+
+<Layout title="Panadería Aurora - Menú">
+    <!-- Header del Menú -->
+    <section class="bg-gradient-to-r from-amber-100 to-orange-100 py-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-amber-800 mb-4">Nuestro Menú</h2>
+            <p class="text-xl text-amber-700 max-w-2xl mx-auto">
+                Descubre nuestra variedad de productos artesanales, horneados frescos cada día
+            </p>
+        </div>
+    </section>
+
+
+    <ProductFilter client:load/>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButtons = document.querySelectorAll('.category-filter');
+            const categorySections = document.querySelectorAll('.category-section');
+
+            function getCategories() {
+                try {
+                    return JSON.parse(localStorage.getItem('categories') || '[]');
+                } catch {
+                    return [];
+                }
+            }
+
+            function setCategories(categories: any) {
+                const unique = [...new Set(categories)];
+                localStorage.setItem('categories', JSON.stringify(unique));
+            }
+
+            function updateButtons(categories: any) {
+                filterButtons.forEach(btn => {
+                    const cat = btn.getAttribute('data-category');
+                    const isActive = categories.includes(cat);
+                    btn.classList.toggle('active', isActive);
+                    btn.classList.toggle('bg-amber-600', isActive);
+                    btn.classList.toggle('text-white', isActive);
+                    btn.classList.toggle('bg-gray-200', !isActive);
+                    btn.classList.toggle('text-amber-800', !isActive);
+                });
+
+                categorySections.forEach(section => {
+                    const cat = section.getAttribute('data-category');
+                    section.style.display =
+                        categories.length === 0 || categories.includes(cat) ? 'block' : 'none';
+                });
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const category = button.getAttribute('data-category');
+                    if (category === 'all') {
+                        setCategories([]);
+                    } else {
+                        setCategories([category]); // ← sólo una categoría activa
+                    }
+                    updateButtons(getCategories());
+                });
+            });
+
+            updateButtons(getCategories());
+        });
+
+    </script>
+</Layout>

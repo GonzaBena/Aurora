@@ -1,0 +1,300 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Panadería Aurora - Carrito">
+  <!-- Header -->
+  <section class="bg-gradient-to-r from-amber-100 to-orange-100 py-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold text-amber-800 mb-4 flex items-center justify-center">
+        <span class="mr-3">🛍️</span>
+        Mi Carrito
+      </h2>
+      <p class="text-xl text-amber-700">Revisa y confirma tu pedido</p>
+    </div>
+  </section>
+
+  <!-- Contenido del Carrito -->
+  <section class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid lg:grid-cols-3 gap-8">
+        
+        <!-- Lista de Productos -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-2xl font-bold text-amber-800 mb-6">Productos en tu Carrito</h3>
+            
+            <!-- Carrito Vacío -->
+            <div id="empty-cart" class="text-center py-12">
+              <span class="text-6xl mb-4 block">🛍️</span>
+              <h4 class="text-xl font-semibold text-amber-800 mb-2">Tu carrito está vacío</h4>
+              <p class="text-amber-600 mb-6">Agrega algunos productos deliciosos para comenzar</p>
+              <a href="/menu" class="bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-700 transition-colors font-semibold">
+                Explorar Menú
+              </a>
+            </div>
+            
+            <!-- Lista de Productos del Carrito -->
+            <div id="cart-items" class="space-y-4 hidden">
+              <!-- Los productos se cargarán dinámicamente con JavaScript -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Resumen del Pedido -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+            <h3 class="text-2xl font-bold text-amber-800 mb-6">Resumen del Pedido</h3>
+            
+            <div class="space-y-4 mb-6">
+              <div class="flex justify-between">
+                <span class="text-amber-700">Subtotal:</span>
+                <span class="font-semibold text-amber-800" id="subtotal">$0.00</span>
+              </div>
+              
+              <div class="flex justify-between">
+                <span class="text-amber-700">Envío:</span>
+                <span class="font-semibold text-amber-800" id="shipping">$5.00</span>
+              </div>
+              
+              <div class="flex justify-between">
+                <span class="text-amber-700">Impuestos:</span>
+                <span class="font-semibold text-amber-800" id="taxes">$0.00</span>
+              </div>
+              
+              <hr class="border-amber-200">
+              
+              <div class="flex justify-between text-lg">
+                <span class="font-bold text-amber-800">Total:</span>
+                <span class="font-bold text-amber-800" id="total">$0.00</span>
+              </div>
+            </div>
+            
+            <!-- Opciones de Entrega -->
+            <div class="mb-6">
+              <h4 class="font-semibold text-amber-800 mb-3">Método de Entrega</h4>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="radio" name="delivery" value="delivery" class="text-amber-600 mr-2" checked>
+                  <span class="text-amber-700">Entrega a Domicilio (+$5.00)</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="delivery" value="pickup" class="text-amber-600 mr-2">
+                  <span class="text-amber-700">Recoger en Tienda (Gratis)</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Botones de Acción -->
+            <div class="space-y-3">
+              <button id="checkout-btn" class="w-full bg-amber-600 text-white py-3 rounded-lg hover:bg-amber-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Proceder al Pago
+              </button>
+              
+              <button id="clear-cart-btn" class="w-full border-2 border-amber-600 text-amber-600 py-2 rounded-lg hover:bg-amber-600 hover:text-white transition-colors font-semibold">
+                Vaciar Carrito
+              </button>
+              
+              <a href="/menu" class="block w-full text-center border-2 border-gray-300 text-gray-600 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+                Continuar Comprando
+              </a>
+            </div>
+            
+            <!-- Código de Descuento -->
+            <div class="mt-6 pt-6 border-t border-amber-200">
+              <h4 class="font-semibold text-amber-800 mb-3">Código de Descuento</h4>
+              <div class="flex gap-2">
+                <input type="text" placeholder="Ingresa tu código" class="flex-1 border border-amber-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+                <button class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors text-sm font-semibold">
+                  Aplicar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal de Confirmación -->
+  <div id="checkout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+      <div class="text-center">
+        <span class="text-6xl mb-4 block">✅</span>
+        <h3 class="text-2xl font-bold text-amber-800 mb-4">¡Pedido Confirmado!</h3>
+        <p class="text-amber-700 mb-6">Gracias por tu compra. Recibirás una confirmación por email en breve.</p>
+        <div class="space-y-3">
+          <button id="close-modal-btn" class="w-full bg-amber-600 text-white py-2 rounded-lg hover:bg-amber-700 transition-colors font-semibold">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const emptyCart = document.getElementById('empty-cart');
+      const cartItems = document.getElementById('cart-items');
+      const subtotalEl = document.getElementById('subtotal');
+      const shippingEl = document.getElementById('shipping');
+      const taxesEl = document.getElementById('taxes');
+      const totalEl = document.getElementById('total');
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const clearCartBtn = document.getElementById('clear-cart-btn');
+      const checkoutModal = document.getElementById('checkout-modal');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+      
+      let cart = [];
+      
+      // Cargar carrito desde localStorage
+      const loadCart = () => {
+        cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        console.log(cart)
+        renderCart();
+        updateTotals();
+      };
+      
+      // Renderizar carrito
+      const renderCart = () => {
+        if (cart.length === 0) {
+          emptyCart?.classList.remove('hidden');
+          cartItems?.classList.add('hidden');
+          checkoutBtn.disabled = true;
+        } else {
+          emptyCart?.classList.add('hidden');
+          cartItems?.classList.remove('hidden');
+          checkoutBtn.disabled = false;
+          
+          cartItems.innerHTML = cart.map(item => `
+            <div class="flex items-center gap-4 p-4 border border-amber-200 rounded-lg">
+              <div class="text-4xl">${item.image || item.icon}</div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-amber-800">${item.name}</h4>
+                <p class="text-amber-600">$${item.price.toFixed(2)} c/u</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="quantity-btn bg-amber-200 text-amber-800 w-8 h-8 rounded-full hover:bg-amber-300 transition-colors" data-id="${item.id}" data-action="decrease">
+                  -
+                </button>
+                <span class="font-semibold text-amber-800 min-w-[2rem] text-center">${item.quantity}</span>
+                <button class="quantity-btn bg-amber-200 text-amber-800 w-8 h-8 rounded-full hover:bg-amber-300 transition-colors" data-id="${item.id}" data-action="increase">
+                  +
+                </button>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-amber-800">$${(item.price * item.quantity).toFixed(2)}</div>
+                <button class="remove-btn text-red-500 hover:text-red-700 text-sm" data-id="${item.id}">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          `).join('');
+          
+          // Agregar event listeners
+          document.querySelectorAll('.quantity-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const id = parseInt(e.target.getAttribute('data-id'));
+              const action = e.target.getAttribute('data-action');
+              updateQuantity(id, action);
+            });
+          });
+          
+          document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const id = parseInt(e.target.getAttribute('data-id'));
+              removeItem(id);
+            });
+          });
+        }
+      };
+      
+      // Actualizar cantidad
+      const updateQuantity = (id, action) => {
+        const itemIndex = cart.findIndex(item => item.id === id);
+        if (itemIndex !== -1) {
+          if (action === 'increase') {
+            cart[itemIndex].quantity += 1;
+          } else if (action === 'decrease' && cart[itemIndex].quantity > 1) {
+            cart[itemIndex].quantity -= 1;
+          }
+          saveCart();
+          renderCart();
+          updateTotals();
+        }
+      };
+      
+      // Eliminar producto
+      const removeItem = (id) => {
+        const elem = cart.find(item => item.id === id);
+        if (elem.quantity > 1) {
+          elem.quantity -= 1;
+        }else {
+          cart = cart.filter(item => item.id !== id);
+        }
+        saveCart();
+        renderCart();
+        updateTotals();
+      };
+      
+      // Guardar carrito
+      const saveCart = () => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
+      };
+      
+      // Calcular totales
+      const updateTotals = () => {
+        const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const deliveryMethod = document.querySelector('input[name="delivery"]:checked').value;
+        const shipping = deliveryMethod === 'delivery' ? 5.00 : 0.00;
+        const taxes = subtotal * 0.08; // 8% de impuestos
+        const total = subtotal + shipping + taxes;
+        
+        subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+        shippingEl.textContent = `$${shipping.toFixed(2)}`;
+        taxesEl.textContent = `$${taxes.toFixed(2)}`;
+        totalEl.textContent = `$${total.toFixed(2)}`;
+      };
+      
+      // Event listeners
+      document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+        radio.addEventListener('change', updateTotals);
+      });
+      
+      clearCartBtn.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+          cart = [];
+          saveCart();
+          renderCart();
+          updateTotals();
+        }
+      });
+      
+      checkoutBtn.addEventListener('click', () => {
+        checkoutModal.classList.remove('hidden');
+        // Vaciar carrito después del "pago"
+        setTimeout(() => {
+          cart = [];
+          saveCart();
+          renderCart();
+          updateTotals();
+        }, 2000);
+      });
+      
+      closeModalBtn.addEventListener('click', () => {
+        checkoutModal.classList.add('hidden');
+      });
+      
+      // Cerrar modal al hacer clic fuera
+      checkoutModal.addEventListener('click', (e) => {
+        if (e.target === checkoutModal) {
+          checkoutModal.classList.add('hidden');
+        }
+      });
+      
+      // Cargar carrito al iniciar
+      loadCart();
+    });
+  </script>
+</Layout>

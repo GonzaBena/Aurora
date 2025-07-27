@@ -1,0 +1,67 @@
+---
+
+---
+<nav class="bg-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <a href="/"  class="flex items-center space-x-2">
+                <span class="text-2xl">🥖</span>
+                <h1 class="text-xl font-bold text-amber-800">Panadería Aurora</h1>
+            </a>
+
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="hover:text-amber-600 transition-colors">Inicio</a>
+                <a href="/menu" class="hover:text-amber-600 transition-colors">Menú</a>
+                <a href="/usuario" class="hover:text-amber-600 transition-colors">Usuario</a>
+                <a href="/carrito" class="hover:text-amber-600 transition-colors flex items-center space-x-1">
+                    <span>🛒</span>
+                    <span>Carrito</span>
+                    <span id="cart-count" class="bg-amber-600 text-white text-xs rounded-full px-2 py-1 ml-1">0</span>
+                </a>
+            </div>
+
+            <!-- Menú móvil -->
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-amber-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú móvil desplegable -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+            <a href="/" class="block hover:text-amber-600 transition-colors">Inicio</a>
+            <a href="/menu" class="block hover:text-amber-600 transition-colors">Menú</a>
+            <a href="/usuario" class="block hover:text-amber-600 transition-colors">Usuario</a>
+            <a href="/carrito" class="block hover:text-amber-600 transition-colors">Carrito 🛒</a>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Toggle menú móvil
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.toggle('hidden');
+    });
+
+    // Funcionalidad básica del carrito
+    const updateCartCount = () => {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const count = cart.reduce((total: number, item: any) => total + item.quantity, 0);
+        const cartCountEl = document.getElementById('cart-count');
+        if (cartCountEl) {
+            cartCountEl.textContent = count.toString();
+        }
+    };
+
+    // Actualizar contador al cargar la página
+    updateCartCount();
+
+    // Escuchar eventos del carrito
+    window.addEventListener('cartUpdated', updateCartCount);
+</script>
